@@ -1,0 +1,20 @@
+Id_user:15496
+Login&pwd: Ahmed&Ahmed123
+Classe: CII-2-SIIR-D
+Email:Ahmed@gmail.com
+
+Id_user:1223
+Login&pwd: Sarra&Sarra123
+Classe: CII-2-SIIR-D
+Email:Sarra@gmail.com
+
+
+Id_user: 111
+Login&pwd: 111&1111
+Classe: CII-2-SIIR-A
+Email: 111
+
+Id_user: 1111
+Login&pwd: EYA&111
+Classe: CII-2-SIIR-A
+Email: EYA@GMAIL.COM
