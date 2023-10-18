@@ -128,10 +128,20 @@ while True:
                                                     menuB2C()
                                                     choixB2c= input("Choisir(c1,c2,c3,c4,c5) : ")
                                                     match choixB2c:
+                                                         case "c1":
+                                                              msg=input("Veuillez entrer le message a chiffrer: ")
+                                                              generer_paireCle(8)
+                                                              msgchiff=chiffrement_RSA(msg)
+                                                              print("Le message chiffré en RSA est : "+str(msgchiff))
+                                                         case "c2":
+                                                                msg=input("Veuillez entrer le message a dechiffrer: ")
+                                                                msgdechiff=dechiffrement_RSA(msg)
+                                                                print("Le message dechiffré en RSA est : "+str(msgdechiff))
                                                          case "c3":
-                                                                chaine=input("Veuillez entrer la chaine que vous voulez signer: ")
-                                                                s=signature(chaine)
-                                                                print("La signature est: ", s)
+                                                            holy()
+                                                         case "c4":
+                                                              holy2()
+                                                            
                                         
                         else:
                             print("Il faut s'enregistrer avant de s'authentifier")

@@ -13,7 +13,12 @@ Classe : CII-2-SIIR-D
 
 ***********************************"""
 import hashlib
-import Crypto
+# import Crypto
+import random
+import math
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+from Crypto.Hash import SHA256
 
 def menuP():
      print("--------|      Menu Principal             |---------")
@@ -145,20 +150,86 @@ def dechiffrement_Affine(chaine,ka,kb):
                chaine_chiff += i
      print(chaine_chiff)
 
-def signature(mot):
-     key = Crypto.PublicKey.RSA.generate(2048)
-     private_key = key.export_key()
-     public_key = key.publickey().export_key()
-     key = Crypto.PublicKey.RSA.import_key(private_key)
-     h = hashlib.SHA256.new(mot)
-     signature = Crypto.Signature.pkcs1_15.new(key).sign(h)
-     return signature
-     
-# def verification_signature(mot):
-#      key = Crypto.PublicKey.RSA.import_key(public_key)
-#      h = hashlib.SHA256.new(mot)
-#      try:
-#           Crypto.Signature.pkcs1_15.new(key).verify(h, signature)
-#           print("La signature est valide.")
-#      except (ValueError, TypeError):
-#           print("La signature n'est pas valide.")
+def generer_nbPremier(bits):
+    while True:
+        num = random.getrandbits(bits)
+        if num > 1 and all(num % i != 0 for i in range(2, int(num**0.5) + 1)):
+            return num
+
+def mod_inverse(a, m):
+    m0, x0, x1 = m, 0, 1
+    while a > 1:
+        q = a // m
+        m, a = a % m, m
+        x0, x1 = x1 - q * x0, x0
+    return (x1 + m0) if x1 < 0 else x1
+
+def generer_paireCle(bits):
+    p = generer_nbPremier(bits)
+    q = generer_nbPremier(bits)
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    e = random.randint(2, phi - 1)
+    while math.gcd(e, phi) != 1:
+        e = random.randint(2, phi - 1)
+    d = mod_inverse(e, phi)
+    file=open("key.txt","w")
+    file.write( str(e) + "," +str(n) +"\n" +str(d) +","+ str(n))
+#     e: publique, d: privé
+
+def chiffrement_RSA(msg):
+     file=open("key.txt","r")
+     keys=file.read().split('\n')
+     e=keys[0].split(',')[0]
+     n=keys[0].split(',')[1]
+     print(f"e: {e}, n: {n}")
+     return [pow(ord(char), int(e), int(n)) for char in msg]  
+
+def dechiffrement_RSA(msg):
+    file=open("key.txt","r")
+    keys=file.read().split('\n')
+    d=keys[1].split(',')[0]
+    n=keys[1].split(',')[1]
+    return ''.join([chr(pow(int(char), int(d), int(n))) for char in str(msg).split(",")])
+
+def extract_public_key(private_key):
+    key = RSA.import_key(private_key)
+    public_key = key.publickey().export_key()
+    return public_key
+def generate_key_pair():
+      key = RSA.generate(2048)
+      private_key = key.export_key()
+      public_key = key.publickey().export_key()
+      return private_key, public_key
+private_key, public_key=generate_key_pair()
+
+def holy():
+  def sign_string(data, private_key):
+      key = RSA.import_key(private_key)
+      h = SHA256.new(data.encode('utf-8'))
+      signer = PKCS1_v1_5.new(key)
+      signature = signer.sign(h)
+      return signature
+  private_key, _ = generate_key_pair()
+  data_to_sign = input("Enter the string to sign: ")
+
+  signature = sign_string(data_to_sign, private_key)
+  signature_hex = signature.hex()
+  print("Signature (Hexadecimal):", signature_hex)
+
+public_key = extract_public_key(private_key)
+
+def holy2():
+     def verify_signature(data, signature, public_key):
+          key = RSA.import_key(public_key)
+          h = SHA256.new(data.encode('utf-8'))
+          verifier = PKCS1_v1_5.new(key)
+          return verifier.verify(h, signature)
+     data_to_verify = input("Enter the string to verify: ")
+     signature_hex = input("Enter the hexadecimal signature: ")
+     signature = bytes.fromhex(signature_hex)
+     if verify_signature(data_to_verify, signature, public_key):
+          print("Signature est valide.")
+     else:
+          print("Signature est invalide.")
+
