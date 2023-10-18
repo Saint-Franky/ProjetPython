@@ -127,6 +127,11 @@ while True:
                                                 case "c":
                                                     menuB2C()
                                                     choixB2c= input("Choisir(c1,c2,c3,c4,c5) : ")
+                                                    match choixB2c:
+                                                         case "c3":
+                                                                chaine=input("Veuillez entrer la chaine que vous voulez signer: ")
+                                                                s=signature(chaine)
+                                                                print("La signature est: ", s)
                                         
                         else:
                             print("Il faut s'enregistrer avant de s'authentifier")

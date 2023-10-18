@@ -5,14 +5,15 @@ Nom Programme : Exercice N
 
 Auteurs : 
 
-      Nom Etudiant1 
+      Nom Wadhah Salhi 
 
-      Nom Etudiant2 
+      Nom Eya Ben Aouicha 
 
 Classe : CII-2-SIIR-D 
 
 ***********************************"""
 import hashlib
+import Crypto
 
 def menuP():
      print("--------|      Menu Principal             |---------")
@@ -124,7 +125,7 @@ def chiffrement_Affine(chaine,ka,kb):
      for i in chaine:
           if i.isalpha() :
                x=ord(i) - ord("A")
-               i_chiff = (ka*(x) + kb) % 26
+               i_chiff = (ka*x + kb) % 26
                i_chiff = i_chiff + ord("A")
                chaine_chiff += chr(i_chiff)
           else:
@@ -136,11 +137,27 @@ def dechiffrement_Affine(chaine,ka,kb):
      for i in chaine:
           if i.isalpha() :
                x=ord(i) - ord("A")
-               i_chiff =int( (pow(ka,-1)*(x- kb)) % 26)
+               i_chiff =int( ((ka**(-1))*(x- kb)) % 26)
                i_chiff = i_chiff + ord("A")
                chaine_chiff += chr(i_chiff)
           else:
                chaine_chiff += i
      print(chaine_chiff)
 
-
+def signature(mot):
+     key = Crypto.PublicKey.RSA.generate(2048)
+     private_key = key.export_key()
+     public_key = key.publickey().export_key()
+     key = Crypto.PublicKey.RSA.import_key(private_key)
+     h = hashlib.SHA256.new(mot)
+     signature = Crypto.Signature.pkcs1_15.new(key).sign(h)
+     return signature
+     
+# def verification_signature(mot):
+#      key = Crypto.PublicKey.RSA.import_key(public_key)
+#      h = hashlib.SHA256.new(mot)
+#      try:
+#           Crypto.Signature.pkcs1_15.new(key).verify(h, signature)
+#           print("La signature est valide.")
+#      except (ValueError, TypeError):
+#           print("La signature n'est pas valide.")
