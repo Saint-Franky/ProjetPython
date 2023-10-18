@@ -120,13 +120,14 @@ def chiffrement_cesar(chaine,k):
                chaine_chiff += i
      print(chaine_chiff)
 
+
 def chiffrement_Affine(chaine,ka,kb):
      chaine_chiff=""
      for i in chaine:
           if i.isalpha() :
-               x=ord(i) - ord("A")
-               i_chiff = (ka*x + kb) % 26
-               i_chiff = i_chiff + ord("A")
+               j = ord("A")
+               x=ord(i) - j
+               i_chiff = (ka*x + kb) % 26 + j
                chaine_chiff += chr(i_chiff)
           else:
                chaine_chiff += i
@@ -136,9 +137,9 @@ def dechiffrement_Affine(chaine,ka,kb):
      chaine_chiff=""
      for i in chaine:
           if i.isalpha() :
-               x=ord(i) - ord("A")
-               i_chiff =int( ((ka**(-1))*(x- kb)) % 26)
-               i_chiff = i_chiff + ord("A")
+               j = ord("A")
+               x=ord(i) - j
+               i_chiff =int( (pow(ka,-1)*(x- kb)) % 26) +j
                chaine_chiff += chr(i_chiff)
           else:
                chaine_chiff += i
