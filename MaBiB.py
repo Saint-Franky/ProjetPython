@@ -19,6 +19,7 @@ import math
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA256
+from Crypto.Signature import pkcs1_15
 
 def menuP():
      print("--------|      Menu Principal             |---------")
@@ -192,44 +193,25 @@ def dechiffrement_RSA(msg):
     n=keys[1].split(',')[1]
     return ''.join([chr(pow(int(char), int(d), int(n))) for char in str(msg).split(",")])
 
-def extract_public_key(private_key):
-    key = RSA.import_key(private_key)
-    public_key = key.publickey().export_key()
-    return public_key
 def generate_key_pair():
       key = RSA.generate(2048)
       private_key = key.export_key()
       public_key = key.publickey().export_key()
       return private_key, public_key
+
 private_key, public_key=generate_key_pair()
 
-def holy():
-  def sign_string(data, private_key):
-      key = RSA.import_key(private_key)
-      h = SHA256.new(data.encode('utf-8'))
-      signer = PKCS1_v1_5.new(key)
-      signature = signer.sign(h)
-      return signature
-  private_key, _ = generate_key_pair()
-  data_to_sign = input("Enter the string to sign: ")
+def creer_signature(chaine):
+    rsa_key = RSA.import_key(private_key)
+    hash_chaine = SHA256.new(str(chaine).encode())
+    signature = pkcs1_15.new(rsa_key).sign(hash_chaine)
+    return signature
 
-  signature = sign_string(data_to_sign, private_key)
-  signature_hex = signature.hex()
-  print("Signature (Hexadecimal):", signature_hex)
-
-public_key = extract_public_key(private_key)
-
-def holy2():
-     def verify_signature(data, signature, public_key):
-          key = RSA.import_key(public_key)
-          h = SHA256.new(data.encode('utf-8'))
-          verifier = PKCS1_v1_5.new(key)
-          return verifier.verify(h, signature)
-     data_to_verify = input("Enter the string to verify: ")
-     signature_hex = input("Enter the hexadecimal signature: ")
-     signature = bytes.fromhex(signature_hex)
-     if verify_signature(data_to_verify, signature, public_key):
-          print("Signature est valide.")
-     else:
-          print("Signature est invalide.")
-
+def verif_signature( chaine,signature):
+    rsa_key = RSA.import_key(public_key)
+    hash_chaine = SHA256.new(str(chaine).encode())
+    try:
+        pkcs1_15.new(rsa_key).verify(hash_chaine, signature)
+        return True
+    except:
+        return False

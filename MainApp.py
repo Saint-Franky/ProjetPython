@@ -51,7 +51,7 @@ while True:
                     
                         login=input("Login: ")
                         mpd=getpass.getpass("PWD: ")
-                        pwd=login.split("@")[0]+"&"+str(mpd)
+                        pwd=login+"&"+str(mpd)
                         file=open("Authentification.txt")
                         user=file.read().split('\n') 
                         element_recherche=f"Login&pwd: {pwd}"
@@ -138,9 +138,18 @@ while True:
                                                                 msgdechiff=dechiffrement_RSA(msg)
                                                                 print("Le message dechiffré en RSA est : "+str(msgdechiff))
                                                          case "c3":
-                                                            holy()
+                                                            chaine=input("Veuillez entrer la chaine: ")
+                                                            sig=creer_signature(chaine)
+                                                            print("La signature est: "+str(sig))
                                                          case "c4":
-                                                              holy2()
+                                                             data_to_verify = input("Veuillez entrer la chaine a verifier: ")
+                                                             signature_hex = input("Veuillez entrer la singature: ")
+                                                             x=verif_signature(data_to_verify, signature_hex)
+                                                            #  print(x)
+                                                             if verif_signature(data_to_verify, signature_hex):
+                                                                 print("Signature est valide.")
+                                                             else:
+                                                                 print("Signature est invalide.")
                                                             
                                         
                         else:
